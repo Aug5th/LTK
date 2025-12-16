@@ -5,16 +5,18 @@ public class Movement : MonoBehaviour
 {
     [Header("Movement")]
     public float moveSpeed = 8f;
-    public float stopDistance = 0.05f;
+    public float stopDistance = 0.1f; // Slightly increased to make stopping easier
+    public float rotateSpeed = 10f;   // Rotation speed
 
     private Rigidbody rb;
     private UnitStats stats;
     private Vector3 targetPosition;
     private bool hasTarget = false;
 
-    // new: optional follow target (e.g., enemy)
     private Transform followTarget;
     private float currentStopDistance;
+    
+    [SerializeField] private bool isMoving;
 
     void Awake()
     {
@@ -22,6 +24,9 @@ public class Movement : MonoBehaviour
         stats = GetComponent<UnitStats>();
         targetPosition = rb.position;
         currentStopDistance = stopDistance;
+        
+        // Prevent tipping: freeze X and Z rotations
+        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
     }
 
     void OnEnable()
@@ -59,54 +64,75 @@ public class Movement : MonoBehaviour
 
     void HandleMovement()
     {
-        if (!hasTarget)
-        {
-            rb.velocity = Vector3.zero;
-            return;
-        }
+        if (!hasTarget) return;
 
-        // if following a transform, update targetPosition from it
+        // Update target position if following a target
         if (followTarget != null)
         {
-            // if followTarget was destroyed, Unity's == null will be true
             if (followTarget == null)
             {
-                followTarget = null;
-                hasTarget = false;
-                rb.velocity = Vector3.zero;
+                StopMoving();
                 return;
             }
-
             targetPosition = followTarget.position;
         }
 
+        // Compute distance
+        // Use a flat vector (ignore Y) to avoid pushing into the ground
         Vector3 currentPos = rb.position;
-        Vector3 dir = targetPosition - currentPos;
+        Vector3 targetPosFlat = new Vector3(targetPosition.x, currentPos.y, targetPosition.z);
+        Vector3 dir = targetPosFlat - currentPos;
         float distance = dir.magnitude;
 
-        // If following a moving target, do NOT clear hasTarget when within stop distance.
-        // Instead stop movement but keep following so if the target moves away we'll resume.
-        if (followTarget != null)
+        // Stopping logic
+        if (distance <= currentStopDistance)
         {
-            if (distance <= currentStopDistance)
+            // If following a target (e.g., enemy): keep hasTarget = true but stop moving
+            if (followTarget != null)
             {
                 rb.velocity = Vector3.zero;
-                return; // keep hasTarget true so following continues
+                isMoving = false;
+                // Keep rotating to face the target while idle (combat style)
+                RotateTowards(dir); 
             }
+            else
+            {
+                // Move-to click destination reached -> fully stop
+                StopMoving();
+            }
+            return;
+        }
+
+        // Movement step
+        isMoving = true;
+        Vector3 moveDir = dir.normalized;
+        
+        // 1) Rotate towards movement direction
+        RotateTowards(moveDir);
+
+        // 2) Compute this frame's step
+        float step = moveSpeed * Time.fixedDeltaTime;
+
+        // 3) Prevent overshoot: if the step exceeds remaining distance, snap to the target
+        if (step >= distance)
+        {
+             // Snap to target to avoid jitter
+             rb.MovePosition(targetPosFlat);
         }
         else
         {
-            if (distance <= currentStopDistance)
-            {
-                hasTarget = false;
-                rb.velocity = Vector3.zero;
-                return;
-            }
+             // Move normally
+             rb.MovePosition(currentPos + moveDir * step);
         }
-
-        Vector3 moveDir = dir.normalized;
-        Vector3 newPos = currentPos + moveDir * moveSpeed * Time.fixedDeltaTime;
-        rb.MovePosition(newPos);
+    }
+    
+    // Helper to rotate smoothly
+    void RotateTowards(Vector3 dir)
+    {
+        if (dir == Vector3.zero) return;
+        Quaternion lookRot = Quaternion.LookRotation(dir);
+        // Use MoveRotation for physics compatibility
+        rb.MoveRotation(Quaternion.Slerp(rb.rotation, lookRot, rotateSpeed * Time.fixedDeltaTime));
     }
 
     public void MoveTo(Vector3 worldPos)
@@ -115,21 +141,31 @@ public class Movement : MonoBehaviour
         currentStopDistance = stopDistance;
         targetPosition = worldPos;
         hasTarget = true;
+        isMoving = true;
     }
 
-    // new: follow a transform until within stopDistance (used for attacking enemies)
     public void MoveToTarget(Transform target, float stopDist)
     {
         if (target == null) return;
         followTarget = target;
-        currentStopDistance = Mathf.Max(0.01f, stopDist);
+        currentStopDistance = Mathf.Max(0.1f, stopDist); // Ensure not too small
         hasTarget = true;
+        isMoving = true;
+    }
+
+    public bool IsPlayerMoving()
+    {
+        return isMoving;
     }
 
     public void StopMoving()
     {
         followTarget = null;
         hasTarget = false;
+        
+        // Fully reset velocities to prevent drift
         rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero; 
+        isMoving = false;
     }
 }
