@@ -49,11 +49,7 @@ public class Movement : MonoBehaviour
 
     void HandleMouseRightClick(Vector3 worldPosition)
     {
-        // stop following any target, move to a position
-        followTarget = null;
-        currentStopDistance = stopDistance;
-        targetPosition = worldPosition;
-        hasTarget = true;
+        MoveTo(worldPosition);
     }
 
     void FixedUpdate()

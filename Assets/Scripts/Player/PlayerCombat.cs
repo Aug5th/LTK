@@ -64,8 +64,8 @@ public class PlayerCombat : MonoBehaviour
         while (currentTarget != null && !currentTarget.IsDead)
         {
             // wait until within range
-            while (currentTarget != null && !currentTarget.IsDead &&
-                   Vector2.Distance(transform.position, currentTarget.Transform.position) > attackRange)
+                 while (currentTarget != null && !currentTarget.IsDead &&
+                     Vector3.Distance(transform.position, currentTarget.Transform.position) > attackRange)
             {
                 yield return null;
             }
@@ -84,18 +84,18 @@ public class PlayerCombat : MonoBehaviour
 
             lastAttackTime = Time.time;
             
-            // Spawn Hit Effect
-            if (hitEffectPrefab != null)
-            {
-                Vector2 hitPos = currentTarget.Transform.position;
-                Collider2D col = currentTarget.Transform.GetComponent<Collider2D>();
-                if (col != null)
-                {
-                    hitPos = col.ClosestPoint(transform.position);
-                }
-                GameObject impact = Instantiate(hitEffectPrefab, hitPos, Quaternion.identity);
-                Destroy(impact, 0.5f);
-            }
+            // // Spawn Hit Effect (3D)
+            // if (hitEffectPrefab != null)
+            // {
+            //     Vector3 hitPos = currentTarget.Transform.position;
+            //     Collider col = currentTarget.Transform.GetComponent<Collider>();
+            //     if (col != null)
+            //     {
+            //         hitPos = col.ClosestPoint(transform.position);
+            //     }
+            //     GameObject impact = Instantiate(hitEffectPrefab, hitPos, Quaternion.identity);
+            //     Destroy(impact, 0.5f);
+            // }
 
             currentTarget.TakeDamage(damage);
 

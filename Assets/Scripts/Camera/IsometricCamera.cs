@@ -121,7 +121,7 @@ public class IsometricCamera : MonoBehaviour
         if (cam != null)
         {
             cam.orthographic = true;
-            if (cam.orthographicSize < 1f) cam.orthographicSize = 5f;
+            if (cam.orthographicSize < 1f) cam.orthographicSize = 7f;
         }
 
         transform.rotation = Quaternion.Euler(ISOMETRIC_ROTATION);

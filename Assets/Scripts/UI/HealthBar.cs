@@ -49,6 +49,9 @@ public class HealthBar : MonoBehaviour
 
     void SetupBar()
     {
+        // face the healthbar to isometric camera
+        transform.rotation = Quaternion.Euler(new Vector3(0,45f,0)); 
+
         // reuse existing children named HP_BG / HP_FG (avoid duplicates)
         bg = FindFirstChildByName("HP_BG");
         fg = FindFirstChildByName("HP_FG");
