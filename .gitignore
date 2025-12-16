@@ -1,0 +1,43 @@
+# Unity generated
+Library/
+Temp/
+Obj/
+Build/
+Builds/
+Logs/
+UserSettings/
+MemoryCaptures/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# Visual Studio / Rider
+.vscode/
+.idea/
+*.sln*
+*.unityproj
+*.csproj.user
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Unity Cache Server
+/Library/ScriptAssemblies/
+
+# Asset Store tools
+Assets/AssetStoreTools*
+
+# Persisted playmode data
+*/PlayModeTestResults.xml
