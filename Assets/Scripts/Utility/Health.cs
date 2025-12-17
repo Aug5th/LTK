@@ -13,6 +13,7 @@ public class Health : MonoBehaviour, IDamagable
 
     /// <summary>0..1 health percent changed</summary>
     public event Action<float> OnHealthChanged;
+    public event Action OnDeath;
 
     private UnitStats unitStats;
 
@@ -107,6 +108,7 @@ public class Health : MonoBehaviour, IDamagable
         IsDead = true;
         
         OnHealthChanged?.Invoke(0f);
+        OnDeath?.Invoke();
         
         Destroy(gameObject);
     }
