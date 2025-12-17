@@ -9,6 +9,8 @@ public class FloatingText : MonoBehaviour
     Vector3 velocity;
     Color baseColor;
 
+    static readonly Quaternion IsometricRotation = Quaternion.Euler(30f, 45f, 0f);
+
     void Awake()
     {
         tm = GetComponent<TextMesh>();
@@ -20,19 +22,17 @@ public class FloatingText : MonoBehaviour
         tm.fontSize = 64;
         tm.richText = false;
         baseColor = tm.color;
-        velocity = new Vector3(0f, 0.8f, 0f); // di chuyển lên
+        
+        velocity = new Vector3(0f, 1f, 0f);
+
+        transform.rotation = IsometricRotation;
     }
 
     void Update()
     {
-        // move and billboard
+        // move and billboard facing isometric camera
         transform.position += velocity * Time.deltaTime;
-        var cam = Camera.main;
-        if (cam != null)
-        {
-            transform.rotation = Quaternion.LookRotation(transform.position - cam.transform.position);
-        }
-
+    
         elapsed += Time.deltaTime;
         if (elapsed > waitTime)
         {
