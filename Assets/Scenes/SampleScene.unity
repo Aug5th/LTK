@@ -2183,7 +2183,7 @@ MonoBehaviour:
   attackSpeed: 1
   attackRange: 1.2
   autoAttackRadius: 4
-  autoAttackLayers:
+  attackableLayers:
     serializedVersion: 2
     m_Bits: 64
 --- !u!1 &1019578006
