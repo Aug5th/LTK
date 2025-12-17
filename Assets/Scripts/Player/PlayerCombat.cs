@@ -12,8 +12,8 @@ public class PlayerCombat : MonoBehaviour
     [Header("Auto Attack")]
     [Tooltip("Radius to auto-acquire enemies when idle")]
     public float autoAttackRadius = 5f;
-    [Tooltip("Layers considered for auto-attack search (optional)")]
-    public LayerMask autoAttackLayers = ~0;
+    [Tooltip("Layers considered as valid attack targets")]
+    public LayerMask attackableLayers = ~0;
 
     private IDamagable currentTarget;
     private Movement movement;
@@ -78,6 +78,9 @@ public class PlayerCombat : MonoBehaviour
     void HandleRightClickOnTarget(IDamagable target)
     {
         if (target == null || target.IsDead) return;
+        
+        // Only attack targets on valid layers
+        if (((1 << target.Transform.gameObject.layer) & attackableLayers) == 0) return;
 
         currentTarget = target;
 
@@ -154,7 +157,7 @@ public class PlayerCombat : MonoBehaviour
     void TryAutoAcquireTarget()
     {
         // Use OverlapSphere to find nearby targets
-        Collider[] hits = Physics.OverlapSphere(transform.position, autoAttackRadius, autoAttackLayers, QueryTriggerInteraction.Ignore);
+        Collider[] hits = Physics.OverlapSphere(transform.position, autoAttackRadius, attackableLayers, QueryTriggerInteraction.Ignore);
         IDamagable nearestTarget = null;
         float bestDist = float.MaxValue;
 
