@@ -37,8 +37,7 @@ public class LootDropper : MonoBehaviour
         // 1. EXP
         if (dropTable.expReward > 0)
         {
-            Debug.Log($"[LootDropper] Dropped {dropTable.expReward} EXP from {name}");
-            // TODO: Add logic to give EXP to player
+            PlayerProfile.Instance.AddExperience(dropTable.expReward);
         }
 
         // 2. Gems
@@ -47,8 +46,7 @@ public class LootDropper : MonoBehaviour
             int amount = Random.Range(dropTable.gemMin, dropTable.gemMax + 1);
             if (amount > 0)
             {
-                Debug.Log($"[LootDropper] Dropped {amount} Gems from {name}");
-                // TODO: Add logic to give Gems to player
+                PlayerInventory.Instance.AddGems(amount);
             }
         }
 
@@ -64,8 +62,7 @@ public class LootDropper : MonoBehaviour
                     int amount = Random.Range(entry.minAmount, entry.maxAmount + 1);
                     if (amount > 0)
                     {
-                        Debug.Log($"[LootDropper] Dropped {amount} x {entry.item.itemName} from {name}");
-                        // TODO: Spawn Item prefab
+                        PlayerInventory.Instance.AddItem(entry.item, amount);
                     }
                 }
             }
