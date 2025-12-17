@@ -42,13 +42,13 @@ public class LootDropper : MonoBehaviour
         }
 
         // 2. Gems
-        if (UnityEngine.Random.value <= dropTable.gemDropChance)
+        if (Random.value <= dropTable.gemDropChance)
         {
-            int amount = UnityEngine.Random.Range(dropTable.gemMin, dropTable.gemMax + 1);
+            int amount = Random.Range(dropTable.gemMin, dropTable.gemMax + 1);
             if (amount > 0)
             {
                 Debug.Log($"[LootDropper] Dropped {amount} Gems from {name}");
-                // TODO: Spawn Gem prefab
+                // TODO: Add logic to give Gems to player
             }
         }
 
@@ -59,9 +59,9 @@ public class LootDropper : MonoBehaviour
             {
                 if (entry.item == null) continue;
 
-                if (UnityEngine.Random.value <= entry.dropChance)
+                if (Random.value <= entry.dropChance)
                 {
-                    int amount = UnityEngine.Random.Range(entry.minAmount, entry.maxAmount + 1);
+                    int amount = Random.Range(entry.minAmount, entry.maxAmount + 1);
                     if (amount > 0)
                     {
                         Debug.Log($"[LootDropper] Dropped {amount} x {entry.item.itemName} from {name}");
