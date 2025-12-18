@@ -1194,6 +1194,7 @@ GameObject:
   - component: {fileID: 706909792}
   - component: {fileID: 706909793}
   - component: {fileID: 706909794}
+  - component: {fileID: 706909795}
   m_Layer: 6
   m_Name: Enemy
   m_TagString: Untagged
@@ -1332,6 +1333,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dropTable: {fileID: 11400000, guid: 1e1df6667b24ff74e848fc6c20b08dfd, type: 2}
+--- !u!114 &706909795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 706909787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4faaec3ddf68254ebd4df32f197b14e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hitVfxPrefab: {fileID: 8583935857730318184, guid: b3cfb96c182dedb488ca7eea138b02aa,
+    type: 3}
+  surfaceOffset: 0.1
+  defaultHeight: 1
 --- !u!1 &750031997
 GameObject:
   m_ObjectHideFlags: 0
@@ -1347,6 +1364,7 @@ GameObject:
   - component: {fileID: 750031999}
   - component: {fileID: 750031998}
   - component: {fileID: 750032004}
+  - component: {fileID: 750032005}
   m_Layer: 6
   m_Name: Enemy (3)
   m_TagString: Untagged
@@ -1485,6 +1503,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dropTable: {fileID: 11400000, guid: 1e1df6667b24ff74e848fc6c20b08dfd, type: 2}
+--- !u!114 &750032005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 750031997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4faaec3ddf68254ebd4df32f197b14e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hitVfxPrefab: {fileID: 8583935857730318184, guid: b3cfb96c182dedb488ca7eea138b02aa,
+    type: 3}
+  surfaceOffset: 0.1
+  defaultHeight: 1
 --- !u!1 &803881081
 GameObject:
   m_ObjectHideFlags: 0
@@ -1805,6 +1839,7 @@ GameObject:
   - component: {fileID: 983309724}
   - component: {fileID: 983309723}
   - component: {fileID: 983309729}
+  - component: {fileID: 983309730}
   m_Layer: 6
   m_Name: Enemy (5)
   m_TagString: Untagged
@@ -1943,6 +1978,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dropTable: {fileID: 11400000, guid: 5730a4fb37a2f0c4182e3eee27337dcb, type: 2}
+--- !u!114 &983309730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 983309722}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4faaec3ddf68254ebd4df32f197b14e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hitVfxPrefab: {fileID: 8583935857730318184, guid: b3cfb96c182dedb488ca7eea138b02aa,
+    type: 3}
+  surfaceOffset: 0.1
+  defaultHeight: 1
 --- !u!1 &994806945
 GameObject:
   m_ObjectHideFlags: 0
@@ -2044,9 +2095,11 @@ GameObject:
   - component: {fileID: 1013622548}
   - component: {fileID: 1013622547}
   - component: {fileID: 1013622549}
+  - component: {fileID: 1013622551}
+  - component: {fileID: 1013622550}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2228,6 +2281,35 @@ MonoBehaviour:
   attackableLayers:
     serializedVersion: 2
     m_Bits: 64
+--- !u!114 &1013622550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1013622540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93c91c407a4486c4fbf39d659a069cd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentLevel: 1
+  currentXP: 0
+  maxXP: 100
+--- !u!114 &1013622551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1013622540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b3d886b49d164443ba22008a0a67977, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentGems: 0
+  items: []
 --- !u!1 &1019578006
 GameObject:
   m_ObjectHideFlags: 0
@@ -2667,6 +2749,7 @@ GameObject:
   - component: {fileID: 1253673363}
   - component: {fileID: 1253673362}
   - component: {fileID: 1253673368}
+  - component: {fileID: 1253673369}
   m_Layer: 6
   m_Name: Enemy (2)
   m_TagString: Untagged
@@ -2805,6 +2888,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dropTable: {fileID: 11400000, guid: f707de5aa10d38a429b52a7c8b1d21bd, type: 2}
+--- !u!114 &1253673369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1253673361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4faaec3ddf68254ebd4df32f197b14e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hitVfxPrefab: {fileID: 8583935857730318184, guid: b3cfb96c182dedb488ca7eea138b02aa,
+    type: 3}
+  surfaceOffset: 0.1
+  defaultHeight: 1
 --- !u!1 &1287888592
 GameObject:
   m_ObjectHideFlags: 0
@@ -2904,6 +3003,7 @@ GameObject:
   - component: {fileID: 1313927170}
   - component: {fileID: 1313927169}
   - component: {fileID: 1313927175}
+  - component: {fileID: 1313927176}
   m_Layer: 6
   m_Name: Enemy (1)
   m_TagString: Untagged
@@ -3042,6 +3142,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dropTable: {fileID: 11400000, guid: 1e1df6667b24ff74e848fc6c20b08dfd, type: 2}
+--- !u!114 &1313927176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1313927168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4faaec3ddf68254ebd4df32f197b14e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hitVfxPrefab: {fileID: 8583935857730318184, guid: b3cfb96c182dedb488ca7eea138b02aa,
+    type: 3}
+  surfaceOffset: 0.1
+  defaultHeight: 1
 --- !u!1 &1332477714
 GameObject:
   m_ObjectHideFlags: 0
@@ -3731,6 +3847,7 @@ GameObject:
   - component: {fileID: 1831925006}
   - component: {fileID: 1831925005}
   - component: {fileID: 1831925011}
+  - component: {fileID: 1831925012}
   m_Layer: 6
   m_Name: Enemy (4)
   m_TagString: Untagged
@@ -3869,6 +3986,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dropTable: {fileID: 11400000, guid: f707de5aa10d38a429b52a7c8b1d21bd, type: 2}
+--- !u!114 &1831925012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1831925004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4faaec3ddf68254ebd4df32f197b14e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hitVfxPrefab: {fileID: 8583935857730318184, guid: b3cfb96c182dedb488ca7eea138b02aa,
+    type: 3}
+  surfaceOffset: 0.1
+  defaultHeight: 1
 --- !u!1 &1920493665
 GameObject:
   m_ObjectHideFlags: 0

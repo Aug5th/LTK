@@ -56,19 +56,6 @@ public class PlayerCombat : MonoBehaviour
 
     void Update()
     {
-        // 1. Check if the current target is still valid
-        if (currentTarget != null)
-        {
-            bool isDead = currentTarget.IsDead;
-            // If target is dead or the component was destroyed (null check for Unity Objects) -> Stop combat
-            if (isDead || (currentTarget as Component) == null) 
-            {
-                StopCombat();
-                return;
-            }
-        }
-
-        // 2. Auto Acquire Logic (Only look for a new target when idle)
         if (!movement.IsPlayerMoving())
         {
             TryAutoAcquireTarget();
@@ -84,12 +71,9 @@ public class PlayerCombat : MonoBehaviour
 
         currentTarget = target;
 
-        // FIX: Set MoveToTarget's stop distance slightly less than attackRange (e.g., 80%)
-        // This prevents the player from standing exactly on the edge and jittering/missing attacks.
-        float moveStopDistance = attackRange * 0.8f; 
+        float moveStopDistance = Mathf.Max(0.5f, attackRange - 0.1f);
         movement.MoveToTarget(target.Transform, moveStopDistance);
 
-        // Start the attack loop
         if (attackRoutine != null) StopCoroutine(attackRoutine);
         attackRoutine = StartCoroutine(AttackLoop());
     }
@@ -134,30 +118,16 @@ public class PlayerCombat : MonoBehaviour
     void PerformAttack()
     {
         if (currentTarget == null) return;
-        
-        // Trigger attack animation here (if applicable)
-        // anim.SetTrigger("Attack");
-
         currentTarget.TakeDamage(damage);
-        
-        // Spawn Hit Effect (3D) - Un-commented for reference
-        // if (hitEffectPrefab != null)
-        // {
-        //     Vector3 hitPos = currentTarget.Transform.position;
-        //     Collider col = currentTarget.Transform.GetComponent<Collider>();
-        //     if (col != null)
-        //     {
-        //         hitPos = col.ClosestPoint(transform.position);
-        //     }
-        //     GameObject impact = Instantiate(hitEffectPrefab, hitPos, Quaternion.identity);
-        //     Destroy(impact, 0.5f);
-        // }
     }
 
     void TryAutoAcquireTarget()
     {
         // Use OverlapSphere to find nearby targets
         Collider[] hits = Physics.OverlapSphere(transform.position, autoAttackRadius, attackableLayers, QueryTriggerInteraction.Ignore);
+        
+        if(hits.Length == 0) return;
+        
         IDamagable nearestTarget = null;
         float bestDist = float.MaxValue;
 

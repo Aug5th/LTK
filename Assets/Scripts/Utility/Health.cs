@@ -14,6 +14,7 @@ public class Health : MonoBehaviour, IDamagable
     /// <summary>0..1 health percent changed</summary>
     public event Action<float> OnHealthChanged;
     public event Action OnDeath;
+    public event Action OnDamageTaken;
 
     private UnitStats unitStats;
 
@@ -78,6 +79,7 @@ public class Health : MonoBehaviour, IDamagable
 
     public void TakeDamage(int amount)
     {
+        OnDamageTaken?.Invoke();
         if (IsDead) return;
         if (amount <= 0) return;
 

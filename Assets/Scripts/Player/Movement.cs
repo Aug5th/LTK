@@ -66,39 +66,34 @@ public class Movement : MonoBehaviour
     {
         if (!hasTarget) return;
 
-        // Update target position if following a target
+        // Update target position
         if (followTarget != null)
         {
-            if (followTarget == null)
-            {
-                StopMoving();
-                return;
-            }
+            if (followTarget == null) { StopMoving(); return; }
             targetPosition = followTarget.position;
         }
 
-        // Compute distance
-        // Use a flat vector (ignore Y) to avoid pushing into the ground
         Vector3 currentPos = rb.position;
         Vector3 targetPosFlat = new Vector3(targetPosition.x, currentPos.y, targetPosition.z);
         Vector3 dir = targetPosFlat - currentPos;
         float distance = dir.magnitude;
 
-        // Stopping logic
         if (distance <= currentStopDistance)
         {
-            // If following a target (e.g., enemy): keep hasTarget = true but stop moving
-            if (followTarget != null)
+            if (isMoving)
             {
                 rb.velocity = Vector3.zero;
                 isMoving = false;
-                // Keep rotating to face the target while idle (combat style)
+            }
+
+            // If following a target (Combat), still rotate towards the target
+            if (followTarget != null)
+            {
                 RotateTowards(dir); 
             }
             else
             {
-                // Move-to click destination reached -> fully stop
-                StopMoving();
+                StopMoving(); // If it is normal mouse movement, cancel the target immediately
             }
             return;
         }
@@ -147,8 +142,22 @@ public class Movement : MonoBehaviour
     public void MoveToTarget(Transform target, float stopDist)
     {
         if (target == null) return;
+        
+        // Check immediately: If already standing next to it, do not activate IsMoving anymore
+        // To avoid 1 frame jitter
+        float dist = Vector3.Distance(transform.position, target.position);
+        if (dist <= stopDist)
+        {
+             // Still set target to rotate face, but do not set isMoving = true
+             followTarget = target;
+             currentStopDistance = stopDist;
+             hasTarget = true;
+             isMoving = false; 
+             return;
+        }
+
         followTarget = target;
-        currentStopDistance = Mathf.Max(0.1f, stopDist); // Ensure not too small
+        currentStopDistance = Mathf.Max(0.1f, stopDist);
         hasTarget = true;
         isMoving = true;
     }
