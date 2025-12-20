@@ -54,7 +54,7 @@ public class DamageImpactListener : MonoBehaviour
         {
             Vector2 direction = ((Vector2)playerTransform.position - (Vector2)transform.position).normalized;
             
-            spawnPos = (Vector2)transform.position + (direction * 0.5f);
+            spawnPos = (Vector3)((Vector2)transform.position + (direction * 0.5f));
             
             spawnPos.y += 0.5f; 
         }
