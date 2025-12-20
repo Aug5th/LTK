@@ -14,23 +14,22 @@ public class IsometricCamera : MonoBehaviour
     [Tooltip("Curve mapping edge proximity [0..1] to speed factor [0..1]")]
     public AnimationCurve edgeSpeedCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
 
-    [Header("World Limits (XZ)")]
+    [Header("World Limits (XY)")]
     public Vector2 limitX = new Vector2(-100f, 100f);
-    public Vector2 limitZ = new Vector2(-100f, 100f);
+    public Vector2 limitY = new Vector2(-100f, 100f);
 
     [Header("Setup")]
     public bool autoSetup = true;
 
-    // True isometric rotation: X = 35.264, Y = 45
-    // Common game iso: X = 30, Y = 45
-    private readonly Vector3 ISOMETRIC_ROTATION = new Vector3(30f, 45f, 0f);
+    // Top-down 2D rotation: X = 90 (looking straight down), Y = 0
+    private readonly Vector3 TOPDOWN_ROTATION = new Vector3(90f, 0f, 0f);
 
     // internal velocity for inertia
-    private Vector3 _velocity; // world-space XZ
+    private Vector2 _velocity; // 2D velocity in XY plane
 
     void Start()
     {
-        SetupIsometric();
+        SetupTopDown();
     }
 
     void Update()
@@ -42,45 +41,42 @@ public class IsometricCamera : MonoBehaviour
 
         if (autoSetup)
         {
-            SetupIsometric();
+            SetupTopDown();
         }
     }
 
     void HandleEdgeScrollingInertia()
     {
-        // Flattened basis on ground plane
-        Vector3 forward = transform.forward; forward.y = 0f; forward.Normalize();
-        Vector3 right = transform.right;   right.y = 0f;   right.Normalize();
-
         // Mouse proximity to edges -> directional target speed
         Vector2 edgeFactor = GetEdgeFactors(); // x: left(-)/right(+), y: down(-)/up(+)
 
-        // Compute desired velocity in world space (combine independently, then clamp)
-        Vector3 desiredVel = (right * edgeFactor.x + forward * edgeFactor.y) * maxPanSpeed;
-        desiredVel.y = 0f;
+        // Compute desired velocity in 2D (XY plane)
+        Vector2 desiredVel = edgeFactor * maxPanSpeed;
 
-        // Choose accel or decel based on dot with desired
+        // Choose accel or decel based on magnitude
         float dt = Time.deltaTime;
         if (desiredVel.sqrMagnitude > 0.0001f)
         {
             // accelerate toward target velocity
-            _velocity = Vector3.MoveTowards(_velocity, desiredVel, acceleration * dt);
+            _velocity = Vector2.MoveTowards(_velocity, desiredVel, acceleration * dt);
         }
         else
         {
             // decelerate to zero
             if (_velocity.sqrMagnitude > 0.0001f)
-                _velocity = Vector3.MoveTowards(_velocity, Vector3.zero, deceleration * dt);
+                _velocity = Vector2.MoveTowards(_velocity, Vector2.zero, deceleration * dt);
             else
-                _velocity = Vector3.zero;
+                _velocity = Vector2.zero;
         }
 
         // integrate position
         if (_velocity.sqrMagnitude > 0f)
         {
-            Vector3 pos = transform.position + _velocity * dt;
+            Vector3 pos = transform.position;
+            pos.x += _velocity.x * dt;
+            pos.y += _velocity.y * dt;
             pos.x = Mathf.Clamp(pos.x, limitX.x, limitX.y);
-            pos.z = Mathf.Clamp(pos.z, limitZ.x, limitZ.y);
+            pos.y = Mathf.Clamp(pos.y, limitY.x, limitY.y);
             transform.position = pos;
         }
     }
@@ -115,7 +111,7 @@ public class IsometricCamera : MonoBehaviour
         return v;
     }
 
-    public void SetupIsometric()
+    public void SetupTopDown()
     {
         Camera cam = GetComponent<Camera>();
         if (cam != null)
@@ -124,6 +120,6 @@ public class IsometricCamera : MonoBehaviour
             if (cam.orthographicSize < 1f) cam.orthographicSize = 7f;
         }
 
-        transform.rotation = Quaternion.Euler(ISOMETRIC_ROTATION);
+        transform.rotation = Quaternion.Euler(TOPDOWN_ROTATION);
     }
 }
