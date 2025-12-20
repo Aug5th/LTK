@@ -11,13 +11,13 @@ public class DamageImpactListener : MonoBehaviour
     public float defaultHeight = 1.0f;
 
     private Health health;
-    private Collider ownCollider;
+    private Collider2D ownCollider;
     private Transform playerTransform;
 
     private void Awake()
     {
         health = GetComponent<Health>();
-        ownCollider = GetComponent<Collider>();
+        ownCollider = GetComponent<Collider2D>();
     }
 
     private void Start()
@@ -52,9 +52,9 @@ public class DamageImpactListener : MonoBehaviour
         
         if (playerTransform != null)
         {
-            Vector3 direction = (playerTransform.position - transform.position).normalized;
+            Vector2 direction = ((Vector2)playerTransform.position - (Vector2)transform.position).normalized;
             
-            spawnPos = transform.position + (direction * 0.5f);
+            spawnPos = (Vector2)transform.position + (direction * 0.5f);
             
             spawnPos.y += 0.5f; 
         }

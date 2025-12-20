@@ -9,7 +9,7 @@ public class FloatingText : MonoBehaviour
     Vector3 velocity;
     Color baseColor;
 
-    static readonly Quaternion IsometricRotation = Quaternion.Euler(30f, 45f, 0f);
+    static readonly Quaternion TopDownRotation = Quaternion.Euler(90f, 0f, 0f);
 
     void Awake()
     {
@@ -25,12 +25,12 @@ public class FloatingText : MonoBehaviour
         
         velocity = new Vector3(0f, 1f, 0f);
 
-        transform.rotation = IsometricRotation;
+        transform.rotation = TopDownRotation;
     }
 
     void Update()
     {
-        // move and billboard facing isometric camera
+        // move and billboard facing top-down camera
         transform.position += velocity * Time.deltaTime;
     
         elapsed += Time.deltaTime;
@@ -51,7 +51,7 @@ public class FloatingText : MonoBehaviour
     {
         // random small offset around top of enemy
         Vector2 rnd = Random.insideUnitCircle * randomRadius;
-        Vector3 spawn = worldPos + new Vector3(rnd.x, verticalOffset + Mathf.Abs(rnd.y), rnd.y * 0.1f);
+        Vector3 spawn = worldPos + new Vector3(rnd.x, verticalOffset + Mathf.Abs(rnd.y), 0f);
 
         GameObject go = new GameObject("FloatingText");
         go.transform.position = spawn;
