@@ -19,8 +19,9 @@ public class MouseInput : MonoBehaviour
         {
             if (Camera.main == null) return;
 
-            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Collider2D hit = Physics2D.OverlapPoint(mousePos);
+            Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 mousePos2D = worldPos;
+            Collider2D hit = Physics2D.OverlapPoint(mousePos2D);
 
             if (hit != null)
             {
@@ -31,7 +32,7 @@ public class MouseInput : MonoBehaviour
                     return;
                 }
 
-                OnRightClick?.Invoke(mousePos);
+                OnRightClick?.Invoke(worldPos);
             }
         }
     }

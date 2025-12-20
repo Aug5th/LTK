@@ -147,7 +147,7 @@ public class Movement : MonoBehaviour
         
         // Check immediately: If already standing next to it, do not activate IsMoving anymore
         // To avoid 1 frame jitter
-        float dist = Vector2.Distance(transform.position, target.position);
+        float dist = Vector2.Distance((Vector2)transform.position, (Vector2)target.position);
         if (dist <= stopDist)
         {
              // Still set target to rotate face, but do not set isMoving = true

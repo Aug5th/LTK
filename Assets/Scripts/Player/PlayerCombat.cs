@@ -83,7 +83,7 @@ public class PlayerCombat : MonoBehaviour
         // Main combat loop
         while (currentTarget != null && !currentTarget.IsDead)
         {
-            float dist = Vector2.Distance(transform.position, currentTarget.Transform.position);
+            float dist = Vector2.Distance((Vector2)transform.position, (Vector2)currentTarget.Transform.position);
 
             // If out of range, just wait for Movement script to bring us closer
             if (dist > attackRange)
@@ -146,7 +146,7 @@ public class PlayerCombat : MonoBehaviour
 
             if (target != null && !target.IsDead)
             {
-                float d = Vector2.Distance(transform.position, target.Transform.position);
+                float d = Vector2.Distance((Vector2)transform.position, (Vector2)target.Transform.position);
                 if (d < bestDist)
                 {
                     bestDist = d;
