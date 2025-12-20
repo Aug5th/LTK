@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Rigidbody2D))]
 public class Movement : MonoBehaviour
 {
     [Header("Movement")]
@@ -8,7 +8,7 @@ public class Movement : MonoBehaviour
     public float stopDistance = 0.1f; // Slightly increased to make stopping easier
     public float rotateSpeed = 10f;   // Rotation speed
 
-    private Rigidbody rb;
+    private Rigidbody2D rb;
     private UnitStats stats;
     private Vector3 targetPosition;
     private bool hasTarget = false;
@@ -20,13 +20,13 @@ public class Movement : MonoBehaviour
 
     void Awake()
     {
-        rb = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody2D>();
         stats = GetComponent<UnitStats>();
         targetPosition = rb.position;
         currentStopDistance = stopDistance;
         
-        // Prevent tipping: freeze X and Z rotations
-        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        // Freeze rotation in 2D
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
 
     void OnEnable()
@@ -73,16 +73,16 @@ public class Movement : MonoBehaviour
             targetPosition = followTarget.position;
         }
 
-        Vector3 currentPos = rb.position;
-        Vector3 targetPosFlat = new Vector3(targetPosition.x, currentPos.y, targetPosition.z);
-        Vector3 dir = targetPosFlat - currentPos;
+        Vector2 currentPos = rb.position;
+        Vector2 targetPos2D = new Vector2(targetPosition.x, targetPosition.y);
+        Vector2 dir = targetPos2D - currentPos;
         float distance = dir.magnitude;
 
         if (distance <= currentStopDistance)
         {
             if (isMoving)
             {
-                rb.velocity = Vector3.zero;
+                rb.velocity = Vector2.zero;
                 isMoving = false;
             }
 
@@ -100,7 +100,7 @@ public class Movement : MonoBehaviour
 
         // Movement step
         isMoving = true;
-        Vector3 moveDir = dir.normalized;
+        Vector2 moveDir = dir.normalized;
         
         // 1) Rotate towards movement direction
         RotateTowards(moveDir);
@@ -112,7 +112,7 @@ public class Movement : MonoBehaviour
         if (step >= distance)
         {
              // Snap to target to avoid jitter
-             rb.MovePosition(targetPosFlat);
+             rb.MovePosition(targetPos2D);
         }
         else
         {
@@ -121,13 +121,15 @@ public class Movement : MonoBehaviour
         }
     }
     
-    // Helper to rotate smoothly
-    void RotateTowards(Vector3 dir)
+    // Helper to rotate smoothly in 2D (Z-axis rotation)
+    void RotateTowards(Vector2 dir)
     {
-        if (dir == Vector3.zero) return;
-        Quaternion lookRot = Quaternion.LookRotation(dir);
-        // Use MoveRotation for physics compatibility
-        rb.MoveRotation(Quaternion.Slerp(rb.rotation, lookRot, rotateSpeed * Time.fixedDeltaTime));
+        if (dir == Vector2.zero) return;
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        // Adjust for sprite orientation (assuming sprite faces right by default)
+        angle -= 90f; // Adjust if sprite faces up by default, remove if sprite faces right
+        Quaternion targetRotation = Quaternion.Euler(0, 0, angle);
+        rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRotation, rotateSpeed * Time.fixedDeltaTime));
     }
 
     public void MoveTo(Vector3 worldPos)
@@ -145,7 +147,7 @@ public class Movement : MonoBehaviour
         
         // Check immediately: If already standing next to it, do not activate IsMoving anymore
         // To avoid 1 frame jitter
-        float dist = Vector3.Distance(transform.position, target.position);
+        float dist = Vector2.Distance((Vector2)transform.position, (Vector2)target.position);
         if (dist <= stopDist)
         {
              // Still set target to rotate face, but do not set isMoving = true
@@ -173,8 +175,8 @@ public class Movement : MonoBehaviour
         hasTarget = false;
         
         // Fully reset velocities to prevent drift
-        rb.velocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero; 
+        rb.velocity = Vector2.zero;
+        rb.angularVelocity = 0f; 
         isMoving = false;
     }
 }

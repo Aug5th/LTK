@@ -83,7 +83,7 @@ public class PlayerCombat : MonoBehaviour
         // Main combat loop
         while (currentTarget != null && !currentTarget.IsDead)
         {
-            float dist = Vector3.Distance(transform.position, currentTarget.Transform.position);
+            float dist = Vector2.Distance((Vector2)transform.position, (Vector2)currentTarget.Transform.position);
 
             // If out of range, just wait for Movement script to bring us closer
             if (dist > attackRange)
@@ -93,10 +93,13 @@ public class PlayerCombat : MonoBehaviour
             }
 
             // Optional: Manually rotate towards the target while attacking (overrides Movement script's rotation when stopped)
-            Vector3 dir = currentTarget.Transform.position - transform.position;
-            dir.y = 0;
-            if (dir != Vector3.zero) 
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 20f);
+            Vector2 dir = (Vector2)(currentTarget.Transform.position - transform.position);
+            if (dir != Vector2.zero) 
+            {
+                float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+                angle -= 90f; // Adjust for sprite orientation
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, 0, angle), Time.deltaTime * 20f);
+            }
 
             // Check Cooldown
             float cooldown = 1f / attackSpeed;
@@ -123,8 +126,8 @@ public class PlayerCombat : MonoBehaviour
 
     void TryAutoAcquireTarget()
     {
-        // Use OverlapSphere to find nearby targets
-        Collider[] hits = Physics.OverlapSphere(transform.position, autoAttackRadius, attackableLayers, QueryTriggerInteraction.Ignore);
+        // Use OverlapCircle to find nearby targets in 2D
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, autoAttackRadius, attackableLayers);
         
         if(hits.Length == 0) return;
         
@@ -143,7 +146,7 @@ public class PlayerCombat : MonoBehaviour
 
             if (target != null && !target.IsDead)
             {
-                float d = Vector3.Distance(transform.position, target.Transform.position);
+                float d = Vector2.Distance((Vector2)transform.position, (Vector2)target.Transform.position);
                 if (d < bestDist)
                 {
                     bestDist = d;

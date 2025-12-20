@@ -19,19 +19,20 @@ public class MouseInput : MonoBehaviour
         {
             if (Camera.main == null) return;
 
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
+            Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 mousePos2D = worldPos;
+            Collider2D hit = Physics2D.OverlapPoint(mousePos2D);
 
-            if (Physics.Raycast(ray, out hit))
+            if (hit != null)
             {
-                var dam = hit.collider.GetComponent<IDamagable>();
+                var dam = hit.GetComponent<IDamagable>();
                 if (dam != null)
                 {
                     OnRightClickTarget?.Invoke(dam);
                     return;
                 }
 
-                OnRightClick?.Invoke(hit.point);
+                OnRightClick?.Invoke(worldPos);
             }
         }
     }
